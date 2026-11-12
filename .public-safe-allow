@@ -1,0 +1,5 @@
+# One regexp per line. Each entry is a deliberate decision; say why.
+
+# The author's public contact address, published on RubyGems and npm like
+# where_is_waldo's. Matches the "internal domain" rule only by being an email.
+scott@byscott\.io

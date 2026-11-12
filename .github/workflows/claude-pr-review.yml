@@ -1,0 +1,20 @@
+# Thin caller — delegates to the centralized public reusable workflow.
+# All review logic (prompt, skip rules, action config) lives in
+# byscott-io/workflows; edit it there to change behavior fleet-wide.
+name: Claude PR Review
+
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    uses: byscott-io/workflows/.github/workflows/claude-pr-review.yml@master
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      CLAUDE_APP_ID: ${{ secrets.CLAUDE_APP_ID }}
+      CLAUDE_APP_PRIVATE_KEY: ${{ secrets.CLAUDE_APP_PRIVATE_KEY }}
+      METRICSBYSCOTT_API_KEY: ${{ secrets.METRICSBYSCOTT_CI_API_KEY }}

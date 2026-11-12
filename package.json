@@ -1,0 +1,75 @@
+{
+  "name": "@byscott-io/pagelet",
+  "version": "0.1.0",
+  "description": "Page builder for React: a visual editor and a renderer that draw saved pages with your own components (built on Puck)",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./editor": {
+      "import": "./dist/editor.js",
+      "require": "./dist/editor.cjs"
+    },
+    "./editor.css": "./dist/editor.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "scripts": {
+    "build": "rollup -c && node scripts/copy-editor-css.js && node scripts/check-entry-split.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "prepublishOnly": "yarn build"
+  },
+  "dependencies": {
+    "@puckeditor/core": "~0.24.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@byscott-io/eslint-config": "^0.2.0",
+    "@rollup/plugin-commonjs": "^29.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
+    "esbuild": "^0.28.2",
+    "eslint": "^10",
+    "jsdom": "^31.0.0",
+    "react": "^19",
+    "react-dom": "^19",
+    "rollup": "^4.68.2",
+    "rollup-plugin-esbuild": "^6.2.1",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/byscott-io/pagelet.git"
+  },
+  "homepage": "https://github.com/byscott-io/pagelet",
+  "keywords": [
+    "page-builder",
+    "react",
+    "rails",
+    "puck",
+    "wysiwyg",
+    "cms"
+  ],
+  "author": "Scott Gibson"
+}
