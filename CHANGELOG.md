@@ -12,5 +12,15 @@
 - Versioned page documents (`{ pagelet: 1, data }`), upgraded when loaded.
 - `safeUrl` / `safeImageUrl`: user-entered links and images refuse unsafe schemes.
 
+### gem `pagelet` (Rails engine)
+- Pages scoped to an owner the app supplies; another owner's page is a 404.
+- Drafts, numbered published versions (never edited after publishing), and
+  rollback by restoring an old version into the draft.
+- JSON API for the editor, behind the app's own `authorize` hook (`:edit`, `:publish`).
+- `Page.published_document(owner, path)` for server-side rendering, and
+  `Page.sitemap_entries(owner)`. Drafts never reach either.
+- Document checks: format version, shape, and a size limit.
+- `bin/rails generate pagelet:install`: initializer, migrations, route.
+
 ## 0.0.1 (gem only)
 - Placeholder that reserves the name on RubyGems. No functionality.

@@ -1,0 +1,56 @@
+plugins:
+  - rubocop-rails
+  - rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 3.1
+  NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    - "node_modules/**/*"
+    - "vendor/**/*"
+    - "dist/**/*"
+    - "bin/check-public-safe" # copied verbatim from its source repo
+
+Style/Documentation:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*"
+    - "*.gemspec"
+
+Metrics/MethodLength:
+  Max: 20
+
+# A migration's change method is a list of columns, not logic.
+Metrics/AbcSize:
+  Exclude:
+    - "db/migrate/**/*"
+
+
+RSpec/ExampleLength:
+  Max: 20
+
+RSpec/MultipleExpectations:
+  Max: 5
+
+# Request specs describe the API, not a class.
+RSpec/DescribeClass:
+  Exclude:
+    - "spec/requests/**/*"
+
+Rails/ApplicationRecord:
+  Exclude:
+    - "spec/dummy/**/*"
+
+# params.expect is Rails 8 only; this gem supports Rails 7.1 and up.
+Rails/StrongParametersExpect:
+  Enabled: false
+
+# A library's validation messages are plain English until it ships locale files.
+Rails/I18nLocaleTexts:
+  Enabled: false

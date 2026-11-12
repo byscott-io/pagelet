@@ -20,9 +20,11 @@ one place.
 
 > Not related to the older `pagelet` package on npm from the BigPipe project.
 
-**Status:** under active development. The npm package (editor, renderer,
-blocks) comes first; a Rails engine for storing, versioning and publishing
-pages follows in the `pagelet` gem.
+**Status:** under active development, not yet released. Two packages:
+
+- `@byscott-io/pagelet` (npm): the editor, renderer and blocks.
+- `pagelet` (gem): a Rails engine that stores pages, keeps every published
+  version, and serves the editor's API. See [docs/INTEGRATION.md](docs/INTEGRATION.md).
 
 ## Install
 
