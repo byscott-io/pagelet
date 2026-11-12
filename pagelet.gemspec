@@ -21,6 +21,6 @@ Gem::Specification.new do |spec|
   # Publish to public RubyGems.org only, so a stray push can't go elsewhere.
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
-  spec.files = Dir["lib/**/*", "LICENSE", "README.md"]
+  spec.files = Dir["lib/**/*", "VERSION", "LICENSE", "README.md", "CHANGELOG.md"]
   spec.require_paths = ["lib"]
 end
