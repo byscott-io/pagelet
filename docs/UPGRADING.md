@@ -3,6 +3,16 @@
 Run from the consuming app. Always bump the gem and the npm package together;
 they share one version.
 
+## 0.2.0 to 0.2.1
+
+No migration and no code change for a typical app.
+
+1. `bundle update pagelet` and `yarn upgrade @byscott-io/pagelet@^0.2.1`.
+2. **Your public bundle gets smaller.** 0.2.0's renderer pulled in Puck's rich
+   text stack (about 350 KB minified); 0.2.1 renders pages itself (about 27 KB).
+   Rebuild and check your public bundle size.
+3. Only if you call `upgradeDocument` yourself: it no longer takes the palette.
+
 ## 0.1.x to 0.2.0
 
 1. Bump both packages: `bundle update pagelet` and

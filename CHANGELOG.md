@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased (0.2.1)
+## 0.2.1 (2026-11-13)
 
 - **The public renderer no longer imports Puck.** 0.2.0's `PageletPage` used
   `@puckeditor/core/rsc`, which pulls in Tiptap and ProseMirror: about 350 KB
