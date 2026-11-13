@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased (0.3.0)
+## 0.3.0 (2026-11-13)
 
 - **AI tools** (`docs/AI_TOOLS.md`): ten plain-Ruby tools that let an AI
   assistant list, read, create and change pages, and publish, unpublish or

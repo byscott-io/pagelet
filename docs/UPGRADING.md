@@ -3,6 +3,16 @@
 Run from the consuming app. Always bump the gem and the npm package together;
 they share one version.
 
+## 0.2.x to 0.3.0
+
+No migration, and nothing changes for an app that does not use the AI tools.
+
+1. `bundle update pagelet` and `yarn upgrade @byscott-io/pagelet@^0.3.0`.
+   Note the minor version: a `~> 0.2.x` gem requirement must become `~> 0.3.0`.
+2. To offer the AI tools, follow `docs/AI_TOOLS.md`: write the block catalog
+   at build time with `paletteCatalog()`, set `config.catalog_path`, and wrap
+   `Pagelet::Tools.classes` in your AI library's tool type.
+
 ## 0.2.2 to 0.2.3
 
 No migration and no code change.
