@@ -95,6 +95,40 @@ RSpec.describe "Pagelet API" do
     end
   end
 
+  describe "unpublishing" do
+    let(:live_page) { create_page.tap(&:publish!) }
+
+    it "needs publish permission" do
+      post "/pagelet/pages/#{live_page.id}/unpublish", headers: as("editor")
+      expect(response).to have_http_status(:forbidden)
+      expect(live_page.reload).to be_published
+    end
+
+    it "takes the page off the site" do
+      post "/pagelet/pages/#{live_page.id}/unpublish", headers: as("publisher")
+      expect(response.parsed_body.dig("page", "published")).to be(false)
+      expect(Pagelet::Page.published_document(site, live_page.path)).to be_nil
+    end
+
+    it "keeps the draft and the versions, so publishing again brings it back" do
+      draft = live_page.draft_document
+      post "/pagelet/pages/#{live_page.id}/unpublish", headers: as("publisher")
+      expect(live_page.reload).to have_attributes(draft_document: draft, published_version_id: nil)
+      expect(live_page.versions.count).to eq(1)
+
+      live_page.publish!
+      expect(Pagelet::Page.published_document(site, live_page.path)).to be_present
+    end
+
+    it "treats another owner's page as not found" do
+      theirs = create_page(other_site)
+      theirs.publish!
+      post "/pagelet/pages/#{theirs.id}/unpublish", headers: as("publisher")
+      expect(response).to have_http_status(:not_found)
+      expect(theirs.reload).to be_published
+    end
+  end
+
   describe "deleting" do
     it "lets an editor delete a draft that was never published" do
       page = create_page

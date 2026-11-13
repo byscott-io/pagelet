@@ -56,6 +56,12 @@ await rejects(client('publisher', 2).getPage(page.id), 404);         // another 
 await rejects(client('publisher', 1, { csrf: 'forged' }).publish(page.id), 422); // CSRF is enforced
 await rejects(client('visitor').listPages(), 403);
 
+await rejects(editor.unpublish(page.id), 403);                    // unpublishing needs publish permission
+assert.equal((await publisher.unpublish(page.id)).page.published, false);
+assert.equal(await client('visitor').getPublished('/about-us'), null); // off the site
+assert.equal((await editor.listVersions(page.id)).versions.length, 2);  // history kept
+await publisher.publish(page.id);                                    // and back again
+
 await rejects(editor.deletePage(page.id), 403);                   // a live page needs publish permission to delete
 assert.equal(await publisher.deletePage(page.id), null);
 await rejects(editor.getPage(page.id), 404);

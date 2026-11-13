@@ -80,6 +80,8 @@ export function createPageletClient({ baseUrl = '/pagelet', csrfToken, headers =
     deletePage: (id) => request('DELETE', pagePath(id)),
     publish: (id, { publishedBy } = {}) =>
       request('POST', `${pagePath(id)}/publish`, publishedBy ? { published_by: publishedBy } : {}),
+    // Takes the page off the site; its draft and versions are kept.
+    unpublish: (id) => request('POST', `${pagePath(id)}/unpublish`, {}),
     listVersions: (id) => request('GET', `${pagePath(id)}/versions`),
     restoreVersion: (id, number) => request('POST', `${pagePath(id)}/versions/${encodeURIComponent(number)}/restore`, {}),
     // Public: the published document at a path, or null when there is none.

@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- **Unpublish.** `POST /pages/:id/unpublish` (publish permission) and
+  `client.unpublish(id)` take a page off the site while keeping its draft and
+  every published version, so publishing again brings it back. Before, the only
+  way to take a page down was to delete it, history and all.
+
 ## 0.2.2 (2026-11-13)
 
 - **Theme `fontSize`**: the page's base text size (default `1rem`), as

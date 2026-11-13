@@ -5,8 +5,8 @@ module Pagelet
   # owner's page answers 404, the same as one that does not exist.
   class PagesController < ApplicationController
     before_action :find_page, except: %i[index create]
-    before_action -> { authorize_pagelet!(:edit, @page) }, except: %i[publish destroy]
-    before_action -> { authorize_pagelet!(:publish, @page) }, only: :publish
+    before_action -> { authorize_pagelet!(:edit, @page) }, except: %i[publish unpublish destroy]
+    before_action -> { authorize_pagelet!(:publish, @page) }, only: %i[publish unpublish]
     # Deleting a live page takes it off the site, as publishing changes it, so
     # it needs publish permission. A never-published draft needs only :edit.
     before_action -> { authorize_pagelet!(@page.published? ? :publish : :edit, @page) }, only: :destroy
@@ -44,6 +44,13 @@ module Pagelet
     def publish
       version = @page.publish!(published_by: params[:published_by].presence)
       render json: { page: detail(@page.reload), version: version_json(version) }
+    end
+
+    # Takes the page off the site. Its draft and every published version are
+    # kept, so publishing again (or restoring a version) brings it back.
+    def unpublish
+      @page.unpublish!
+      render json: { page: detail(@page.reload) }
     end
 
     private

@@ -36,6 +36,9 @@ describe('createPageletClient', () => {
     await createPageletClient({ fetch, baseUrl: '/admin/cms/' }).publish(3, { publishedBy: 'pat' });
     expect(fetch.mock.calls[0][0]).toBe('/admin/cms/pages/3/publish');
     expect(JSON.parse(fetch.mock.calls[0][1].body)).toEqual({ published_by: 'pat' });
+    await createPageletClient({ fetch, baseUrl: '/admin/cms/' }).unpublish(3);
+    expect(fetch.mock.calls[1][0]).toBe('/admin/cms/pages/3/unpublish');
+    expect(fetch.mock.calls[1][1].method).toBe('POST');
   });
 
   it('encodes the path when fetching a published page', async () => {

@@ -39,8 +39,8 @@ Pagelet.configure do |config|
   config.owner = ->(controller) { Current.site }
 
   # :edit covers listing, creating, changing and seeing drafts, and deleting
-  # pages that were never published. :publish covers publishing and deleting
-  # a live page.
+  # pages that were never published. :publish covers publishing, unpublishing
+  # and deleting a live page.
   config.authorize = ->(controller, action, page) do
     user = controller.current_user
     action == :publish ? user&.can_publish? : user&.can_edit?
@@ -99,6 +99,7 @@ published pages only.
 | `PATCH /pages/:id` | `:edit` | change `path`, `title` or `draft_document` |
 | `DELETE /pages/:id` | `:edit`, or `:publish` if the page is live | delete a page and its history |
 | `POST /pages/:id/publish` | `:publish` | publish the draft as the next numbered version |
+| `POST /pages/:id/unpublish` | `:publish` | take the page off the site, keeping its draft and versions |
 | `GET /pages/:id/versions` | `:edit` | published history, marking the live version |
 | `POST /pages/:id/versions/:number/restore` | `:edit` | copy an old version into the draft (publish it to go live) |
 | `GET /published?path=/about` | none | the published document (with `page_path` and `rest`), for browser-side rendering |
