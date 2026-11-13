@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.3 (2026-11-13)
 
 - **Unpublish.** `POST /pages/:id/unpublish` (publish permission) and
   `client.unpublish(id)` take a page off the site while keeping its draft and

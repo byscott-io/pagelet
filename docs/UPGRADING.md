@@ -3,6 +3,15 @@
 Run from the consuming app. Always bump the gem and the npm package together;
 they share one version.
 
+## 0.2.2 to 0.2.3
+
+No migration and no code change.
+
+1. `bundle update pagelet` and `yarn upgrade @byscott-io/pagelet@^0.2.3`.
+2. Optional: offer an Unpublish action in your admin. `client.unpublish(id)`
+   (`POST /pages/:id/unpublish`, publish permission) takes a page off the site
+   and keeps its draft and versions.
+
 ## 0.2.1 to 0.2.2
 
 No migration and no code change.
