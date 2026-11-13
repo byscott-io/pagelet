@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased (0.2.1)
+
+- **The public renderer no longer imports Puck.** 0.2.0's `PageletPage` used
+  `@puckeditor/core/rsc`, which pulls in Tiptap and ProseMirror: about 350 KB
+  minified on every public page. pagelet now draws pages with its own renderer
+  (`src/render.jsx`), which produces byte-for-byte the same HTML as Puck's (a
+  test holds it to that). The renderer bundle is now about 27 KB minified.
+- The build fails if the renderer imports Puck or exceeds a size budget.
+- **Older Puck data with DropZones renders correctly.** A block that draws
+  `puck.renderDropZone({ zone })` gets its blocks from `data.zones`, exactly as
+  Puck's renderer does (held to Puck's HTML by a test). 0.2.0 ran Puck's
+  `migrate()` on public pages, which throws for such a block.
+- The editor converts zones to slots with Puck's `migrate()` when the block
+  now has a matching slot field, and opens the data unchanged when it does not
+  (`migrate()` throws there), instead of crashing.
+- `upgradeDocument(document)` no longer takes the palette.
+
 ## 0.2.0 (2026-11-13)
 
 ### npm `@byscott-io/pagelet`

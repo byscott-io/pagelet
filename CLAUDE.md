@@ -19,7 +19,7 @@ One version for both, in `VERSION`.
 ```bash
 yarn test     # vitest; renderer tests run in Node with no DOM, on purpose
 yarn lint
-yarn build    # also fails if the renderer bundle imports the editor
+yarn build    # also fails if the renderer bundle imports Puck or passes its size budget
 bundle exec rspec    # against spec/dummy, an in-memory SQLite Rails app
 bundle exec rubocop
 bin/e2e              # the built npm client against the running engine, CSRF on

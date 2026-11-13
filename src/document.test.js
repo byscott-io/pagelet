@@ -37,11 +37,8 @@ describe('page documents', () => {
     log.mockRestore();
   });
 
-  it("runs Puck's migrate for an older Puck shape", () => {
-    const log = vi.spyOn(console, 'log').mockImplementation(() => {});
-    // Pre-props root: fields sat directly on root.
-    const doc = upgradeDocument({ pagelet: 1, data: { root: { title: 'Old' }, content: [] } }, createPalette());
+  it('moves an old-style root (fields beside props) into props, without Puck', () => {
+    const doc = upgradeDocument({ pagelet: 1, data: { root: { title: 'Old' }, content: [] } });
     expect(doc.data.root.props.title).toBe('Old');
-    log.mockRestore();
   });
 });
