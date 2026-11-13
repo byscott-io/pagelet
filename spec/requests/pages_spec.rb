@@ -95,6 +95,28 @@ RSpec.describe "Pagelet API" do
     end
   end
 
+  describe "unpublished changes and versions" do
+    it "says when a live page's draft differs from what is published" do
+      page = create_page.tap(&:publish!)
+      get "/pagelet/pages", headers: as("editor")
+      expect(response.parsed_body["pages"].first).to include("unpublished_changes" => false)
+
+      page.update!(draft_document: page_document("Changed"))
+      get "/pagelet/pages", headers: as("editor")
+      expect(response.parsed_body["pages"].first).to include("unpublished_changes" => true, "published_version" => 1)
+    end
+
+    it "returns one version's document, marked live or not" do
+      page = create_page.tap(&:publish!)
+      page.update!(draft_document: page_document("Second"))
+      page.publish!
+
+      get "/pagelet/pages/#{page.id}/versions/1", headers: as("editor")
+      expect(response.parsed_body["version"]).to include("number" => 1, "live" => false)
+      expect(response.parsed_body.dig("version", "document")).to eq(page.versions.find_by(number: 1).document)
+    end
+  end
+
   describe "unpublishing" do
     let(:live_page) { create_page.tap(&:publish!) }
 

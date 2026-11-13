@@ -8,6 +8,7 @@ Pagelet::Engine.routes.draw do
     post :publish, on: :member
     post :unpublish, on: :member
     resources :versions, only: :index do
+      get ":number", action: :show, on: :collection, as: :show, constraints: { number: /\d+/ }
       post ":number/restore", action: :restore, on: :collection, as: :restore, constraints: { number: /\d+/ }
     end
   end

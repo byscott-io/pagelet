@@ -74,7 +74,7 @@ module Pagelet
 
     def summary(page)
       { id: page.id, path: page.path, title: page.title, matches_subpaths: page.matches_subpaths,
-        published: page.published?,
+        published: page.published?, unpublished_changes: page.unpublished_changes?,
         published_version: page.published_version&.number, updated_at: page.updated_at }
     end
 

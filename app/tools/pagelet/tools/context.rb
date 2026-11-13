@@ -15,7 +15,7 @@ module Pagelet
         super(owner:, can:, preview_url:, catalog: catalog || Pagelet::Catalog.load(Pagelet.config.catalog_path))
       end
 
-      def pages = Pagelet::Page.where(owner: owner)
+      def pages = Pagelet::Page.owned_by(owner)
     end
   end
 end

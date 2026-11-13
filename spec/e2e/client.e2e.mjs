@@ -46,8 +46,11 @@ assert.equal(await client('visitor').getPublished('/nowhere'), null);
 await publisher.publish(page.id);
 const { versions } = await editor.listVersions(page.id);
 assert.deepEqual(versions.map((v) => [v.number, v.live]), [[1, false], [2, true]]);
+assert.equal((await editor.getVersion(page.id, 1)).version.document.data.content[0].props.text, 'First');
+assert.equal((await editor.listPages()).pages.find((p) => p.id === page.id).unpublished_changes, false);
 await editor.restoreVersion(page.id, 1);
 assert.equal((await editor.getPage(page.id)).page.draft_document.data.content[0].props.text, 'First');
+assert.equal((await editor.listPages()).pages.find((p) => p.id === page.id).unpublished_changes, true); // v2 is live
 
 const conflict = await rejects(editor.createPage({ path: '/about-us', title: 'Again' }), 422);
 assert.match(conflict.errors.path.join(), /already been taken/);
