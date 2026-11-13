@@ -95,6 +95,27 @@ RSpec.describe "Pagelet API" do
     end
   end
 
+  describe "deleting" do
+    it "lets an editor delete a draft that was never published" do
+      page = create_page
+      delete "/pagelet/pages/#{page.id}", headers: as("editor")
+      expect(response).to have_http_status(:no_content)
+      expect(Pagelet::Page.exists?(page.id)).to be(false)
+    end
+
+    it "needs publish permission to delete a live page" do
+      page = create_page
+      page.publish!
+      delete "/pagelet/pages/#{page.id}", headers: as("editor")
+      expect(response).to have_http_status(:forbidden)
+      expect(Pagelet::Page.exists?(page.id)).to be(true)
+
+      delete "/pagelet/pages/#{page.id}", headers: as("publisher")
+      expect(response).to have_http_status(:no_content)
+      expect(Pagelet::PageVersion.where(page_id: page.id)).to be_empty
+    end
+  end
+
   describe "publishing, history and rollback" do
     it "publishes, lists versions and restores an old one into the draft" do
       page = create_page(document: page_document("First"))

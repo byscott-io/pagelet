@@ -5,8 +5,11 @@ module Pagelet
   # owner's page answers 404, the same as one that does not exist.
   class PagesController < ApplicationController
     before_action :find_page, except: %i[index create]
-    before_action -> { authorize_pagelet!(:edit, @page) }, except: :publish
+    before_action -> { authorize_pagelet!(:edit, @page) }, except: %i[publish destroy]
     before_action -> { authorize_pagelet!(:publish, @page) }, only: :publish
+    # Deleting a live page takes it off the site, as publishing changes it, so
+    # it needs publish permission. A never-published draft needs only :edit.
+    before_action -> { authorize_pagelet!(@page.published? ? :publish : :edit, @page) }, only: :destroy
 
     def index
       render json: { pages: pages.order(:path).map { |page| summary(page) } }

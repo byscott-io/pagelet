@@ -6,9 +6,9 @@ Pagelet.configure do |config|
   # Runs in the controller, so request helpers are available.
   config.owner = ->(_controller) { raise "Set Pagelet.config.owner in #{__FILE__}" }
 
-  # Required. May this request take this action? action is :edit (create,
-  # change, delete, list pages, see drafts) or :publish. page is nil when
-  # listing or creating.
+  # Required. May this request take this action? action is :edit (list,
+  # create, change, see drafts, delete a never-published page) or :publish
+  # (publish, delete a live page). page is nil when listing or creating.
   config.authorize = ->(_controller, _action, _page) { false }
 
   # The engine's controllers inherit from this, so your sign-in and CSRF

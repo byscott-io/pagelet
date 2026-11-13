@@ -38,7 +38,9 @@ Pagelet.configure do |config|
   # Whose pages this request may see. Every query is scoped to it.
   config.owner = ->(controller) { Current.site }
 
-  # :edit covers listing, creating, changing, deleting and seeing drafts.
+  # :edit covers listing, creating, changing and seeing drafts, and deleting
+  # pages that were never published. :publish covers publishing and deleting
+  # a live page.
   config.authorize = ->(controller, action, page) do
     user = controller.current_user
     action == :publish ? user&.can_publish? : user&.can_edit?
@@ -75,7 +77,7 @@ published pages only.
 | `POST /pages` | `:edit` | create (`page: { path, title }`), with an empty draft |
 | `GET /pages/:id` | `:edit` | a page and its draft |
 | `PATCH /pages/:id` | `:edit` | change `path`, `title` or `draft_document` |
-| `DELETE /pages/:id` | `:edit` | delete a page and its history |
+| `DELETE /pages/:id` | `:edit`, or `:publish` if the page is live | delete a page and its history |
 | `POST /pages/:id/publish` | `:publish` | publish the draft as the next numbered version |
 | `GET /pages/:id/versions` | `:edit` | published history, marking the live version |
 | `POST /pages/:id/versions/:number/restore` | `:edit` | copy an old version into the draft (publish it to go live) |

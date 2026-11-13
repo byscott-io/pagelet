@@ -27,7 +27,9 @@ function csrfFromPage() {
 export function createPageletClient({ baseUrl = '/pagelet', csrfToken, headers = {}, fetch: fetchImpl } = {}) {
   const doFetch = fetchImpl ?? globalThis.fetch;
   if (typeof doFetch !== 'function') throw new Error('pagelet: no fetch available; pass one to createPageletClient');
-  const root = baseUrl.replace(/\/+$/, '');
+  // A loop rather than /\/+$/: that regex is slow on long runs of slashes.
+  let root = String(baseUrl);
+  while (root.endsWith('/')) root = root.slice(0, -1);
 
   async function request(method, path, body) {
     const token = typeof csrfToken === 'function' ? csrfToken() : (csrfToken ?? csrfFromPage());
