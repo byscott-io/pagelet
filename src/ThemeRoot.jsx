@@ -1,3 +1,4 @@
+import { safeImageUrl } from './safeUrl.js';
 import { cssImage, overlayColor } from './style.js';
 import { themeToStyle } from './theme.js';
 
@@ -32,8 +33,9 @@ export function resolveBackground(theme = {}, page = {}) {
           // A page may keep the site's photo but change how much shows through.
           overlayOpacity: page.overlayOpacity ?? site.overlayOpacity,
         };
+  // Both forms, so nothing has to parse one back out of the other.
   const image = cssImage(chosen.image);
-  return image ? { ...chosen, image } : null;
+  return image ? { ...chosen, image, imageUrl: safeImageUrl(chosen.image) } : null;
 }
 
 export function ThemeRoot({ theme, page, children }) {
@@ -48,7 +50,6 @@ export function ThemeRoot({ theme, page, children }) {
 
   const radius = background.rounded ? 'var(--pagelet-radius)' : 0;
   const panel = { background: overlayColor(background.overlayColor, background.overlayOpacity), padding: 'calc(var(--pagelet-space) * 2)' };
-  const imageUrl = background.image.slice(5, -2); // url("...") -> ...
 
   // 'photo': the image and the panel share one grid cell, so the area is as
   // tall as the photo, or as the content when that is taller (the photo then
@@ -56,7 +57,7 @@ export function ThemeRoot({ theme, page, children }) {
   const area =
     background.fit === 'photo' ? (
       <div className="pagelet-background" style={{ display: 'grid', borderRadius: radius, overflow: 'hidden' }}>
-        <img src={decodeURI(imageUrl)} alt="" aria-hidden="true" style={{ gridArea: '1 / 1', width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+        <img src={background.imageUrl} alt="" aria-hidden="true" style={{ gridArea: '1 / 1', width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
         <div className="pagelet-panel" style={{ gridArea: '1 / 1', ...panel }}>
           {children}
         </div>
