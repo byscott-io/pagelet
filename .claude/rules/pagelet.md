@@ -27,3 +27,7 @@
   whole page, and deleting a live page needs :publish, not :edit.
 - `published_document` and the public endpoint serve published versions only.
   Nothing a visitor can reach returns a draft.
+- AI tools (`app/tools/pagelet/tools/`, `docs/AI_TOOLS.md`): the owner always
+  comes from the app's Context, never from a tool argument, and every change
+  that reaches the live site goes through `ConfirmedBase`. A new tool that
+  publishes, deletes or changes site settings without it is a bug.

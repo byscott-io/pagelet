@@ -10,5 +10,6 @@ export { PageletApiError, createPageletClient } from './client.js';
 export { Icon, iconNames } from './icons.jsx';
 export { embedAllowed } from './blocks/media.jsx';
 export { overlayColor } from './style.js';
+export { CATALOG_VERSION, paletteCatalog } from './catalog.js';
 export { PageletMenu } from './PageletMenu.jsx';
 export { PageletLayout } from './PageletLayout.jsx';

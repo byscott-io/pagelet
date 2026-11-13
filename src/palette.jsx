@@ -52,6 +52,8 @@ export function createPalette({ blocks = {}, hide = [], categories = {}, root = 
     if (typeof block?.render !== 'function') {
       throw new Error(`pagelet: block "${name}" needs a render function`);
     }
+    // description: optional, for people and AI tools reading the catalog
+    // (paletteCatalog); Puck ignores it.
     const { category = 'other', ...component } = block;
     components[name] = component;
     (membership[category] ??= []).push(name);
