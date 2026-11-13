@@ -14,3 +14,11 @@
 - Puck is pinned to a minor version (`~0.24.0`). Upgrade it deliberately, in one
   change, with the editor and renderer tests green.
 - One version for gem and npm (`VERSION`); bump both together.
+- Every engine query goes through `pages` (scoped to `pagelet_owner`), never
+  `Page.all` or a bare `Page.find`. Another owner's page must answer 404. The
+  request specs prove it; keep them failing if scoping breaks.
+- Published versions are append-only. Rollback restores into the draft; it
+  never rewrites or deletes history. The only way history goes is deleting the
+  whole page, and deleting a live page needs :publish, not :edit.
+- `published_document` and the public endpoint serve published versions only.
+  Nothing a visitor can reach returns a draft.

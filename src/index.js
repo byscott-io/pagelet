@@ -6,3 +6,4 @@ export { DOCUMENT_VERSION, createDocument, emptyData, upgradeDocument } from './
 export { defaultTheme, themeToStyle, tokenVar } from './theme.js';
 export { safeImageUrl, safeUrl } from './safeUrl.js';
 export { embedUrl } from './blocks/media.jsx';
+export { PageletApiError, createPageletClient } from './client.js';

@@ -20,9 +20,11 @@ one place.
 
 > Not related to the older `pagelet` package on npm from the BigPipe project.
 
-**Status:** under active development. The npm package (editor, renderer,
-blocks) comes first; a Rails engine for storing, versioning and publishing
-pages follows in the `pagelet` gem.
+**Status:** under active development, not yet released. Two packages:
+
+- `@byscott-io/pagelet` (npm): the editor, renderer and blocks.
+- `pagelet` (gem): a Rails engine that stores pages, keeps every published
+  version, and serves the editor's API. See [docs/INTEGRATION.md](docs/INTEGRATION.md).
 
 ## Install
 
@@ -82,6 +84,29 @@ import { PageletPage } from '@byscott-io/pagelet';
 `document` is plain JSON (`{ pagelet: 1, data: {...} }`). Store it as-is; pass
 it back to either component. Pages saved by an older pagelet are upgraded when
 they load.
+
+**4. With the Rails engine**, the client does the storing:
+
+```jsx
+import { createPageletClient } from '@byscott-io/pagelet';
+
+const pages = createPageletClient(); // same origin, mounted at /pagelet
+
+const { page } = await pages.getPage(id);
+<PageletEditor
+  document={page.draft_document}
+  palette={palette}
+  onChange={(document) => pages.saveDraft(id, document)}
+  onPublish={async (document) => {
+    await pages.saveDraft(id, document);
+    await pages.publish(id);
+  }}
+/>;
+```
+
+It sends the app's session cookie and the CSRF token from the page's
+`csrf-token` meta tag, and throws `PageletApiError` (with `status` and field
+`errors`) when the server refuses.
 
 ## Theme
 

@@ -39,3 +39,46 @@ jobs:
       - run: yarn test
       # The build also fails if the public renderer bundle imports the editor.
       - run: yarn build
+
+  ruby:
+    name: RuboCop, RSpec and gem audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+      - run: bundle exec rubocop
+      - run: bundle exec rspec
+      - run: bundle exec bundler-audit check --update
+      # The suite again, against the gem as it would be published: proves the
+      # gemspec's file list carries everything (migrations, routes, generator).
+      - name: Run the suite against the built gem
+        run: |
+          gem build pagelet.gemspec
+          mkdir -p /tmp/gemcheck
+          gem unpack pagelet-*.gem --target /tmp/gemcheck
+          dir=$(ls -d /tmp/gemcheck/pagelet-*)
+          gem spec pagelet-*.gem --ruby > "$dir/pagelet.gemspec"
+          cp -r spec .rspec /tmp/gemcheck/
+          printf 'source "https://rubygems.org"\ngem "pagelet", path: "%s"\ngem "rspec-rails", "~> 8.0"\ngem "sqlite3", ">= 2.1"\n' "$dir" > /tmp/gemcheck/Gemfile
+          cd /tmp/gemcheck
+          BUNDLE_GEMFILE=/tmp/gemcheck/Gemfile BUNDLE_FROZEN=false bundle install
+          BUNDLE_GEMFILE=/tmp/gemcheck/Gemfile bundle exec rspec
+
+  e2e:
+    name: npm client against the Rails engine
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: bin/e2e

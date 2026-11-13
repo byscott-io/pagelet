@@ -1,0 +1,5 @@
+test:
+  adapter: sqlite3
+  # The end-to-end run uses a file, because a server's threads would each get
+  # their own private in-memory database.
+  database: "<%= ENV.fetch("PAGELET_E2E_DB", ":memory:") %>"

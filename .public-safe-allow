@@ -3,3 +3,7 @@
 # The author's public contact address, published on RubyGems and npm like
 # where_is_waldo's. Matches the "internal domain" rule only by being an email.
 scott@byscott\.io
+
+# The end-to-end check binds its test server to the loopback address. That is
+# this machine, not anyone's host.
+127\.0\.0\.1
