@@ -1,4 +1,5 @@
 import { safeImageUrl } from '../safeUrl.js';
+import { percentField } from '../style.js';
 import { tokenVar } from '../theme.js';
 
 export const Image = {
@@ -8,15 +9,26 @@ export const Image = {
     url: { type: 'text', label: 'Image URL' },
     alt: { type: 'text', label: 'Description (for screen readers)' },
     caption: { type: 'text' },
+    align: {
+      type: 'radio',
+      options: [
+        { label: 'Left', value: 'left' },
+        { label: 'Center', value: 'center' },
+        { label: 'Right', value: 'right' },
+      ],
+    },
+    width: { ...percentField('Width (% of the column)'), min: 10 },
   },
-  defaultProps: { url: '', alt: '', caption: '' },
-  render: ({ url, alt, caption }) => {
+  defaultProps: { url: '', alt: '', caption: '', align: 'left', width: 100 },
+  render: ({ url, alt, caption, align, width }) => {
     const src = safeImageUrl(url);
     if (!src) return null;
+    const percent = Math.min(100, Math.max(10, Number(width) || 100));
+    const side = align === 'center' ? { marginInline: 'auto' } : align === 'right' ? { marginLeft: 'auto' } : {};
     return (
-      <figure style={{ margin: '0 0 1em' }}>
-        <img src={src} alt={alt ?? ''} style={{ maxWidth: '100%', height: 'auto', display: 'block', borderRadius: tokenVar('radius') }} />
-        {caption && <figcaption style={{ fontSize: '0.9em', opacity: 0.75, marginTop: '6px' }}>{caption}</figcaption>}
+      <figure style={{ margin: '0 0 1em', width: `${percent}%`, maxWidth: '100%', ...side }}>
+        <img src={src} alt={alt ?? ''} style={{ width: '100%', height: 'auto', display: 'block', borderRadius: tokenVar('radius') }} />
+        {caption && <figcaption style={{ fontSize: '0.9em', opacity: 0.75, marginTop: '6px', textAlign: align }}>{caption}</figcaption>}
       </figure>
     );
   },
@@ -119,3 +131,50 @@ export const VideoEmbed = {
     );
   },
 };
+
+// An embedded page from another site, such as a statement of faith hosted
+// elsewhere. Only offered when the app names the hosts it trusts
+// (createPalette({ embedHosts })): framing an arbitrary page is how a site ends
+// up showing something its owner never chose.
+export function embedAllowed(value, hosts) {
+  let url;
+  try {
+    url = new URL(String(value ?? '').trim());
+  } catch {
+    return undefined;
+  }
+  if (url.protocol !== 'https:') return undefined;
+  const host = url.hostname.toLowerCase();
+  const ok = hosts.some((allowed) => {
+    const name = String(allowed).toLowerCase();
+    return host === name || host.endsWith(`.${name}`);
+  });
+  return ok ? url.href : undefined;
+}
+
+export function makeEmbed(hosts) {
+  return {
+    label: 'Embedded page',
+    category: 'media',
+    fields: {
+      url: { type: 'text', label: `Page address (https, from: ${hosts.join(', ')})` },
+      title: { type: 'text', label: 'Title (for screen readers)' },
+      height: { type: 'number', label: 'Height (pixels)', min: 200, max: 4000 },
+    },
+    defaultProps: { url: '', title: 'Embedded page', height: 800 },
+    render: ({ url, title, height }) => {
+      const src = embedAllowed(url, hosts);
+      if (!src) return null;
+      return (
+        <iframe
+          src={src}
+          title={title || 'Embedded page'}
+          loading="lazy"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+          referrerPolicy="no-referrer"
+          style={{ width: '100%', height: `${Math.min(4000, Math.max(200, Number(height) || 800))}px`, border: 0, borderRadius: tokenVar('radius'), background: '#fff' }}
+        />
+      );
+    },
+  };
+}

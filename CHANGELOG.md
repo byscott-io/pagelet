@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased (0.2.0)
+
+### npm `@byscott-io/pagelet`
+- **Page settings** (the page's own fields): a browser title, and a background
+  that follows the site's, is custom, or is none, with an overlay color and
+  **opacity %**. `pageSettings(document)` returns the title.
+- **Site background**, set in the theme: an image, overlay color and opacity,
+  `fit` (`cover`, or `photo` to show the whole photo), and `frame` (`none`, or
+  `card` for a bordered, rounded, padded frame).
+- **New blocks:** Quote (italic text plus a citation), Icon list (icon, text, an
+  optional link), Schedule (rows of day / time / what), and Embedded page.
+- **Embedded page** is offered only when the app names trusted hosts:
+  `createPalette({ embedHosts: ['example.org'] })`. https only, sandboxed.
+- **Right alignment** for Text, Heading, Button and the new blocks; Image gains
+  alignment and a width %; Section gains a background image with an overlay
+  color and opacity.
+- A built-in **icon set** (inline SVG): location, phone, email, video, calendar,
+  clock, link, Facebook, YouTube. `<Icon name>` is exported.
+
 ## 0.1.0 (2026-11-13)
 
 First release.

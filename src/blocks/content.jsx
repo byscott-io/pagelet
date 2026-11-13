@@ -1,10 +1,17 @@
+import { Icon, iconOptions } from '../icons.jsx';
 import { safeImageUrl, safeUrl } from '../safeUrl.js';
 import { tokenVar } from '../theme.js';
 
+// Field values are stored in saved pages: add options, never rename them.
 const alignOptions = [
   { label: 'Left', value: 'left' },
   { label: 'Center', value: 'center' },
+  { label: 'Right', value: 'right' },
 ];
+
+// Keeps a narrow column of text next to the side it is aligned to.
+const blockMargin = (align) =>
+  align === 'center' ? { marginInline: 'auto' } : align === 'right' ? { marginLeft: 'auto' } : {};
 
 // Plain text with blank lines between paragraphs. Rendered as text, never as
 // HTML, so nothing a user types can inject markup.
@@ -86,7 +93,7 @@ export const Text = {
   },
   defaultProps: { text: 'Write something here.', align: 'left' },
   render: ({ text, align }) => (
-    <div style={{ textAlign: align, maxWidth: '68ch', marginInline: align === 'center' ? 'auto' : undefined }}>
+    <div style={{ textAlign: align, maxWidth: '68ch', ...blockMargin(align) }}>
       <Paragraphs text={text} />
     </div>
   ),
@@ -235,5 +242,95 @@ export const Faq = {
         </details>
       ))}
     </div>
+  ),
+};
+
+// A quotation and where it is from: scripture, a hymn, a speaker.
+export const Quote = {
+  label: 'Quote',
+  category: 'content',
+  fields: {
+    text: { type: 'textarea' },
+    citation: { type: 'text', label: 'Citation (e.g. Matthew 28:19-20 ESV)' },
+    citationAlign: { type: 'radio', label: 'Citation alignment', options: alignOptions },
+  },
+  defaultProps: { text: 'Quotation', citation: '', citationAlign: 'right' },
+  render: ({ text, citation, citationAlign }) => (
+    <figure style={{ margin: '0 0 1em', maxWidth: '68ch' }}>
+      <blockquote style={{ margin: 0, fontStyle: 'italic' }}>
+        <Paragraphs text={text} style={{ margin: '0 0 0.5em' }} />
+      </blockquote>
+      {citation && (
+        <figcaption style={{ textAlign: citationAlign ?? 'right' }}>{citation}</figcaption>
+      )}
+    </figure>
+  ),
+};
+
+// Lines with an icon and an optional link: a phone number, an address with a
+// map link, an email, social pages.
+export const IconList = {
+  label: 'Icon list',
+  category: 'content',
+  fields: {
+    items: {
+      type: 'array',
+      getItemSummary: (item) => item.text?.split('\n')[0] || 'Item',
+      arrayFields: {
+        icon: { type: 'select', options: iconOptions },
+        text: { type: 'textarea', label: 'Text (line breaks are kept)' },
+        href: { type: 'text', label: 'Link (optional): https://, tel:, mailto:' },
+      },
+      defaultItemProps: { icon: 'link', text: '', href: '' },
+    },
+    align: { type: 'radio', options: alignOptions },
+  },
+  defaultProps: { items: [{ icon: 'phone', text: '(555) 555-0100', href: 'tel:+15555550100' }], align: 'left' },
+  render: ({ items = [], align }) => (
+    <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 1em', textAlign: align }}>
+      {items.map((item, index) => {
+        const href = safeUrl(item.href);
+        const content = (
+          <>
+            <Icon name={item.icon} style={{ marginRight: '0.4em' }} />
+            <span style={{ whiteSpace: 'pre-line' }}>{item.text}</span>
+          </>
+        );
+        return (
+          <li key={index} style={{ margin: '0.35em 0' }}>
+            {href ? <a href={href} style={{ color: tokenVar('colorAccent') }}>{content}</a> : content}
+          </li>
+        );
+      })}
+    </ul>
+  ),
+};
+
+// Service times, office hours, an event's order: rows of day, time and what.
+export const Schedule = {
+  label: 'Schedule',
+  category: 'content',
+  fields: {
+    rows: {
+      type: 'array',
+      getItemSummary: (row) => [row.day, row.time, row.what].filter(Boolean).join(' ') || 'Row',
+      arrayFields: { day: { type: 'text' }, time: { type: 'text' }, what: { type: 'text' } },
+      defaultItemProps: { day: 'Sunday', time: '10:00', what: 'Worship' },
+    },
+    align: { type: 'radio', options: alignOptions },
+  },
+  defaultProps: { rows: [{ day: 'Sunday', time: '10:00', what: 'Worship' }], align: 'center' },
+  render: ({ rows = [], align }) => (
+    <table style={{ borderCollapse: 'collapse', margin: '0 0 1em', ...blockMargin(align ?? 'center') }}>
+      <tbody>
+        {rows.map((row, index) => (
+          <tr key={index}>
+            <td style={{ padding: '4px 12px', textAlign: 'right', fontWeight: 600 }}>{row.day}</td>
+            <td style={{ padding: '4px 12px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{row.time}</td>
+            <td style={{ padding: '4px 12px' }}>{row.what}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   ),
 };
