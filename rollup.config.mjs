@@ -5,6 +5,7 @@ import esbuild from 'rollup-plugin-esbuild';
 //   @byscott-io/pagelet         -> dist/index.{js,cjs}   (public pages)
 //   @byscott-io/pagelet/editor  -> dist/editor.{js,cjs}  (admin screens)
 // React and Puck stay external: the app resolves exactly one copy of each.
+// (Only the editor entry imports Puck at all; see scripts/check-entry-split.js.)
 const external = (id) => /^(react|react-dom|@puckeditor\/core)(\/|$)/.test(id);
 
 const plugins = [

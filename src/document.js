@@ -1,5 +1,3 @@
-import { migrate } from '@puckeditor/core/rsc';
-
 // What an app stores for a page: Puck's data inside an envelope that carries
 // pagelet's own format version. The version lets a stored page be upgraded when
 // pagelet or Puck changes shape, so apps never hold raw Puck data whose format
@@ -17,9 +15,10 @@ export function createDocument(data = emptyData()) {
 // Bring a stored document up to the current format.
 //
 // Accepts bare Puck data too, since an app adopting pagelet may already hold
-// some. Passing the palette also runs Puck's own migrate(), which converts
-// older Puck structures (DropZone zones) into the current one (slots).
-export function upgradeDocument(document, palette) {
+// some. Imports nothing from Puck, because the public renderer uses this: an
+// old root shape (fields beside "props") is converted here, and DropZone zones,
+// which pagelet never wrote, are converted by the editor (needsPuckMigration).
+export function upgradeDocument(document) {
   if (document == null) return createDocument();
   if (typeof document !== 'object') {
     throw new TypeError('pagelet: a page document must be an object');
@@ -44,13 +43,20 @@ export function upgradeDocument(document, palette) {
   //   if (doc.pagelet === 1) doc = migrateV1toV2(doc);
 
   const data = { ...emptyData(), ...doc.data };
-  return createDocument(palette && needsPuckMigration(data) ? migrate(data, palette.config) : data);
+  return createDocument({ ...data, root: upgradeRoot(data.root) });
 }
 
-// Puck's migrate() logs to the console every time it is given a config, even
-// when there is nothing to convert. On a public page that would be a log line
-// per page view, so only call it for data in an older Puck shape: DropZone
-// zones holding content, or a root whose fields sit outside `props`.
+// Puck once kept root fields beside "props" ({ title } rather than
+// { props: { title } }). Move any such fields into props.
+function upgradeRoot(root = {}) {
+  const { props = {}, readOnly, ...legacy } = root;
+  if (Object.keys(legacy).length === 0) return root;
+  return { ...(readOnly ? { readOnly } : {}), props: { ...legacy, ...props } };
+}
+
+// Data in an older Puck shape: DropZone zones holding content, or a root whose
+// fields sit outside props. The editor runs Puck's migrate() only then, because
+// migrate() logs to the console every time it is called.
 export function needsPuckMigration(data) {
   const zones = data.zones ?? {};
   if (Object.values(zones).some((content) => Array.isArray(content) && content.length > 0)) return true;
