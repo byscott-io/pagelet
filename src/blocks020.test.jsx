@@ -48,6 +48,13 @@ describe('0.2.0 blocks', () => {
     expect(out).toContain('margin-left:auto');
   });
 
+  it('Image: clamps any width, 0 included, to 10-100%', () => {
+    const at = (width) => html(page([block('Image', { url: 'https://example.com/a.png', alt: '', align: 'left', width })]));
+    expect(at(0)).toContain('width:10%');
+    expect(at(500)).toContain('width:100%');
+    expect(at('')).toContain('width:100%');
+  });
+
   it('Text and Heading align right', () => {
     const out = html(page([block('Text', { text: 'Right side', align: 'right' }), block('Heading', { text: 'H', level: 'h2', align: 'right' })]));
     expect(out.match(/text-align:right/g).length).toBeGreaterThanOrEqual(2);
@@ -81,7 +88,8 @@ describe('Embedded page', () => {
     const palette = createPalette({ embedHosts: hosts });
     const allowed = html(page([block('Embed', { url: 'https://bfm.sbc.net/bfm2000/', title: 'Baptist Faith and Message', height: 900 })]), { palette });
     expect(allowed).toContain('<iframe');
-    expect(allowed).toContain('sandbox="allow-scripts');
+    expect(allowed).toContain('sandbox="allow-scripts allow-same-origin allow-popups"');
+    expect(allowed).not.toContain('escape-sandbox');
     const refused = html(page([block('Embed', { url: 'https://evil.example/', title: 'x', height: 900 })]), { palette });
     expect(refused).not.toContain('<iframe');
   });

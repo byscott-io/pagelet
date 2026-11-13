@@ -60,4 +60,18 @@ await rejects(editor.deletePage(page.id), 403);                   // a live page
 assert.equal(await publisher.deletePage(page.id), null);
 await rejects(editor.getPage(page.id), 404);
 
+// Site settings: public to read, publish permission to change.
+const settings = { theme: { colorAccent: '#0000ff' }, menu: { style: 'bar', brand: { label: 'Ours' }, items: [{ label: 'Mission', href: '/mission' }] } };
+await rejects(editor.updateSite(settings), 403);
+assert.equal((await publisher.updateSite(settings)).menu.items[0].label, 'Mission');
+assert.equal((await client('visitor').getSite()).theme.colorAccent, '#0000ff');
+assert.deepEqual(await client('visitor', 2).getSite(), { theme: {}, menu: { style: 'bar', brand: {}, items: [] } });
+
+// A page that answers for sub-paths.
+const archive = (await editor.createPage({ path: '/messages', title: 'Messages', matchesSubpaths: true })).page;
+assert.equal(archive.matches_subpaths, true);
+await publisher.publish(archive.id);
+const sub = await client('visitor').getPublishedPage('/messages/43');
+assert.deepEqual([sub.pagePath, sub.rest], ['/messages', '43']);
+
 console.log('e2e: npm client and Rails engine agree on every call');

@@ -64,6 +64,26 @@ document = Pagelet::Page.published_document(Current.site, request.path)
 Hand `document` to `<PageletPage>` (for example as JSON in the page, or
 through your server-rendering setup). Drafts never come out of this method.
 
+### Site settings: theme and menu
+
+One record per owner, read by every page:
+
+```ruby
+Pagelet::Site.settings_for(owner) # => { "theme" => {...}, "menu" => {...} }
+```
+
+`GET /site` returns them to anyone; `PATCH /site` changes them and needs
+`:publish`, because a change is live at once. Render them with
+`<PageletLayout site={settings}>` around `<PageletPage theme={settings.theme}>`.
+
+### Pages that answer for sub-paths
+
+Set `matches_subpaths: true` on a page and it also serves every path below it:
+a `/messages` page serves `/messages/43`. An exact page always wins, then the
+longest such prefix. `Page.published_match(owner, path)` returns the document,
+the page's own path and the remainder (`"43"`), which an app's own block uses
+to decide what to show.
+
 ### Sitemaps
 
 `Pagelet::Page.sitemap_entries(owner)` returns `[{ path:, updated_at: }]` for
@@ -81,7 +101,9 @@ published pages only.
 | `POST /pages/:id/publish` | `:publish` | publish the draft as the next numbered version |
 | `GET /pages/:id/versions` | `:edit` | published history, marking the live version |
 | `POST /pages/:id/versions/:number/restore` | `:edit` | copy an old version into the draft (publish it to go live) |
-| `GET /published?path=/about` | none | the published document, for browser-side rendering |
+| `GET /published?path=/about` | none | the published document (with `page_path` and `rest`), for browser-side rendering |
+| `GET /site` | none | the site's theme and menu |
+| `PATCH /site` | `:publish` | change them (live at once) |
 
 The engine's controllers inherit from `config.parent_controller`, so the app's
 sign-in and CSRF protection apply.

@@ -59,11 +59,23 @@ export function createPageletClient({ baseUrl = '/pagelet', csrfToken, headers =
 
   const pagePath = (id) => `/pages/${encodeURIComponent(id)}`;
 
+  async function getPublishedPage(path) {
+    try {
+      const data = await request('GET', `/published?path=${encodeURIComponent(path)}`);
+      return { document: data.document, pagePath: data.page_path, rest: data.rest ?? '' };
+    } catch (error) {
+      if (error instanceof PageletApiError && error.status === 404) return null;
+      throw error;
+    }
+  }
+
   return {
     listPages: () => request('GET', '/pages'),
     getPage: (id) => request('GET', pagePath(id)),
-    createPage: ({ path, title }) => request('POST', '/pages', { page: { path, title } }),
-    updatePage: (id, { path, title }) => request('PATCH', pagePath(id), { page: { path, title } }),
+    createPage: ({ path, title, matchesSubpaths }) =>
+      request('POST', '/pages', { page: { path, title, matches_subpaths: matchesSubpaths } }),
+    updatePage: (id, { path, title, matchesSubpaths }) =>
+      request('PATCH', pagePath(id), { page: { path, title, matches_subpaths: matchesSubpaths } }),
     saveDraft: (id, document) => request('PATCH', pagePath(id), { page: { draft_document: document } }),
     deletePage: (id) => request('DELETE', pagePath(id)),
     publish: (id, { publishedBy } = {}) =>
@@ -71,14 +83,13 @@ export function createPageletClient({ baseUrl = '/pagelet', csrfToken, headers =
     listVersions: (id) => request('GET', `${pagePath(id)}/versions`),
     restoreVersion: (id, number) => request('POST', `${pagePath(id)}/versions/${encodeURIComponent(number)}/restore`, {}),
     // Public: the published document at a path, or null when there is none.
-    getPublished: async (path) => {
-      try {
-        const { document } = await request('GET', `/published?path=${encodeURIComponent(path)}`);
-        return document;
-      } catch (error) {
-        if (error instanceof PageletApiError && error.status === 404) return null;
-        throw error;
-      }
-    },
+    getPublished: async (path) => (await getPublishedPage(path))?.document ?? null,
+    // Public: { document, pagePath, rest } for a path, or null. rest is what
+    // follows a page that answers for sub-paths: /messages/43 -> "43".
+    getPublishedPage,
+    // Public: the site's theme and menu.
+    getSite: async () => (await request('GET', '/site')).settings,
+    // Needs publish permission: changes are live at once.
+    updateSite: async (settings) => (await request('PATCH', '/site', { settings })).settings,
   };
 }

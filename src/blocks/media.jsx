@@ -23,7 +23,9 @@ export const Image = {
   render: ({ url, alt, caption, align, width }) => {
     const src = safeImageUrl(url);
     if (!src) return null;
-    const percent = Math.min(100, Math.max(10, Number(width) || 100));
+    // A missing width means full width; any number, 0 included, is clamped.
+    const requested = Number.isFinite(Number(width)) && width !== '' && width !== null ? Number(width) : 100;
+    const percent = Math.min(100, Math.max(10, requested));
     const side = align === 'center' ? { marginInline: 'auto' } : align === 'right' ? { marginLeft: 'auto' } : {};
     return (
       <figure style={{ margin: '0 0 1em', width: `${percent}%`, maxWidth: '100%', ...side }}>
@@ -170,7 +172,7 @@ export function makeEmbed(hosts) {
           src={src}
           title={title || 'Embedded page'}
           loading="lazy"
-          sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+          sandbox="allow-scripts allow-same-origin allow-popups"
           referrerPolicy="no-referrer"
           style={{ width: '100%', height: `${Math.min(4000, Math.max(200, Number(height) || 800))}px`, border: 0, borderRadius: tokenVar('radius'), background: '#fff' }}
         />

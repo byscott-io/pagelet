@@ -53,7 +53,7 @@ module Pagelet
     end
 
     def page_params
-      permitted = params.require(:page).permit(:path, :title)
+      permitted = params.require(:page).permit(:path, :title, :matches_subpaths)
       permitted[:draft_document] = draft_document_param if params[:page].key?(:draft_document)
       permitted
     end
@@ -66,7 +66,8 @@ module Pagelet
     end
 
     def summary(page)
-      { id: page.id, path: page.path, title: page.title, published: page.published?,
+      { id: page.id, path: page.path, title: page.title, matches_subpaths: page.matches_subpaths,
+        published: page.published?,
         published_version: page.published_version&.number, updated_at: page.updated_at }
     end
 

@@ -24,11 +24,41 @@ module Pagelet
     scope :owned_by, ->(owner) { where(owner: owner) }
     scope :published, -> { where.not(published_version_id: nil) }
 
-    # The published document at this path, for rendering. nil when there is no
-    # such page or it has never been published.
+    # What a visitor at this path sees, for rendering:
+    #   Match = (document, page_path, rest)
+    # An exact page wins. Otherwise the longest page marked matches_subpaths
+    # whose path is a prefix of this one, with the remainder in rest: a page at
+    # /messages serves /messages/43 with rest "43". nil when nothing published
+    # matches.
+    Match = Struct.new(:document, :page_path, :rest, keyword_init: true)
+
+    def self.published_match(owner, path)
+      path = normalize(path)
+      pages = owned_by(owner).published.includes(:published_version)
+
+      exact = pages.find_by(path: path)
+      return match_for(exact, "") if exact
+
+      prefix = longest_prefix(pages, path)
+      prefix && match_for(prefix, path.delete_prefix(prefix.path == "/" ? "/" : "#{prefix.path}/"))
+    end
+
+    def self.longest_prefix(pages, path)
+      candidates = pages.where(matches_subpaths: true).select { |page| subpath?(path, page.path) }
+      candidates.max_by { |page| page.path.length }
+    end
+
+    def self.match_for(page, rest)
+      Match.new(document: page.published_version.document, page_path: page.path, rest: rest)
+    end
+
+    def self.subpath?(path, base)
+      base == "/" ? path != "/" : path.start_with?("#{base}/")
+    end
+
+    # The published document at this path (see published_match), or nil.
     def self.published_document(owner, path)
-      owned_by(owner).published.includes(:published_version)
-                     .find_by(path: normalize(path))&.published_version&.document
+      published_match(owner, path)&.document
     end
 
     # Published pages for a sitemap: [{ path:, updated_at: }].
