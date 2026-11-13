@@ -14,6 +14,9 @@ export const defaultTheme = {
   colorAccentText: '#ffffff',
   fontBody: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
   fontHeading: 'inherit',
+  // The page's base text size. Block text is sized in em from it, so text,
+  // lists, schedules and quotes all scale together; the menu keeps its own.
+  fontSize: '1rem',
   radius: '8px',
   maxWidth: '1100px',
   space: '24px',

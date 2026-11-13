@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- **Theme `fontSize`**: the page's base text size (default `1rem`), as
+  `--pagelet-font-size`. It applies to the page, not the menu, so a site can
+  use larger body text without a larger menu. The Hero subheading is now sized
+  in `em` so it scales with it.
+
 ## 0.2.1 (2026-11-13)
 
 - **The public renderer no longer imports Puck.** 0.2.0's `PageletPage` used

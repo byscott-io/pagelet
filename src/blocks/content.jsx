@@ -149,7 +149,7 @@ export const Hero = {
           <h1 style={{ fontFamily: tokenVar('fontHeading'), fontSize: 'clamp(2rem, 5vw, 3.25rem)', margin: '0 0 0.4em', textWrap: 'balance' }}>
             {heading}
           </h1>
-          <Paragraphs text={subheading} style={{ fontSize: '1.15rem' }} />
+          <Paragraphs text={subheading} style={{ fontSize: '1.15em' }} />
           <ButtonLink label={buttonLabel} href={buttonHref} variant="outline" />
         </div>
       </header>
