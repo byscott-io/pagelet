@@ -143,3 +143,23 @@ describe('overlayColor', () => {
     expect(overlayColor('red;}body{display:none', 20)).toBe('rgba(255, 255, 255, 0.2)');
   });
 });
+
+describe('theme fontSize', () => {
+  const doc = page([block('Text', { text: 'Sized', align: 'left' })]);
+
+  it('sets the page text size from the theme, defaulting to 1rem', () => {
+    expect(html(doc)).toMatch(/class="pagelet" style="--pagelet-[^"]*--pagelet-font-size:1rem;[^"]*font-size:var\(--pagelet-font-size\)/);
+    expect(html(doc, { theme: { fontSize: '1.25rem' } })).toContain('--pagelet-font-size:1.25rem');
+  });
+
+  it('leaves the menu at its own size', async () => {
+    const { PageletLayout } = await import('./PageletLayout.jsx');
+    const out = renderToString(
+      <PageletLayout site={{ theme: { fontSize: '1.25rem' }, menu: { items: [{ label: 'Mission', href: '/mission' }] } }}>
+        <PageletPage document={doc} palette={createPalette()} theme={{ fontSize: '1.25rem' }} />
+      </PageletLayout>
+    );
+    const layoutStyle = out.match(/class="pagelet-layout" style="([^"]*)"/)[1];
+    expect(layoutStyle).not.toMatch(/(^|;)font-size:/);
+  });
+});

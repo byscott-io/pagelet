@@ -120,7 +120,7 @@ Any subset of these tokens; the rest use the defaults:
 {
   colorText, colorBackground, colorMuted,
   colorAccent, colorAccentText,
-  fontBody, fontHeading,
+  fontBody, fontHeading, fontSize,   // fontSize: the page's base text size, e.g. '1.25rem'
   radius, maxWidth, space,
 }
 ```

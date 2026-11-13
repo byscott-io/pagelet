@@ -1,6 +1,6 @@
 import { safeImageUrl } from './safeUrl.js';
 import { cssImage, overlayColor } from './style.js';
-import { themeToStyle } from './theme.js';
+import { themeToStyle, tokenVar } from './theme.js';
 
 // The root of every page: theme tokens as CSS variables, then the page's
 // background. The background is either the site's (theme.background), the
@@ -42,7 +42,7 @@ export function ThemeRoot({ theme, page, children }) {
   const background = resolveBackground(theme ?? {}, page ?? {});
   if (!background) {
     return (
-      <div className="pagelet" style={themeToStyle(theme)}>
+      <div className="pagelet" style={{ ...themeToStyle(theme), fontSize: tokenVar('fontSize') }}>
         {children}
       </div>
     );
@@ -71,7 +71,7 @@ export function ThemeRoot({ theme, page, children }) {
     );
 
   return (
-    <div className="pagelet" style={themeToStyle(theme)}>
+    <div className="pagelet" style={{ ...themeToStyle(theme), fontSize: tokenVar('fontSize') }}>
       {background.frame === 'card' ? (
         <div className="pagelet-frame" style={{ border: '1px solid rgba(0, 0, 0, 0.15)', borderRadius: radius, padding: 'var(--pagelet-space)', background: 'var(--pagelet-color-background)' }}>
           {area}
