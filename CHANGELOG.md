@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased (0.3.0)
+
+- **AI tools** (`docs/AI_TOOLS.md`): ten plain-Ruby tools that let an AI
+  assistant list, read, create and change pages, and publish, unpublish or
+  delete them. Changes that reach the live site take a confirmation code bound
+  to exactly that change.
+- **`paletteCatalog(palette)`** (npm) writes the palette's blocks and fields as
+  JSON. `Pagelet::Catalog` (gem) checks pages against it and fills in what was
+  left out. `config.catalog_path` says where it is.
+- A block may have a `description`, shown to AI tools.
+
 ## 0.2.3 (2026-11-13)
 
 - **Unpublish.** `POST /pages/:id/unpublish` (publish permission) and

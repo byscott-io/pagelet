@@ -157,3 +157,9 @@ A block is a [Puck component config](https://puckeditor.com/docs/api-reference/c
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## AI tools
+
+An AI assistant can build and change pages through pagelet's tools, with a
+confirmation step for anything that reaches the live site. See
+[docs/AI_TOOLS.md](docs/AI_TOOLS.md).

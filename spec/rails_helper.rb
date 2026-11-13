@@ -13,6 +13,7 @@ ActiveRecord::MigrationContext.new(Pagelet::Engine.root.join("db/migrate").to_s)
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
+  config.include ActiveSupport::Testing::TimeHelpers
   config.infer_spec_type_from_file_location!
 end
 require_relative "support_helpers"

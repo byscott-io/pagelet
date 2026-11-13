@@ -22,11 +22,16 @@ module Pagelet
     # Largest page document accepted, in bytes of JSON.
     attr_accessor :max_document_bytes
 
+    # The block catalog the AI tools read (paletteCatalog() written to JSON at
+    # build time; docs/AI_TOOLS.md). Only the tools need it.
+    attr_accessor :catalog_path
+
     attr_writer :owner, :authorize
 
     def initialize
       @parent_controller = "ActionController::Base"
       @max_document_bytes = 1_000_000
+      @catalog_path = nil
       @owner = nil
       @authorize = nil
     end
