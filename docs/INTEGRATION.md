@@ -82,5 +82,15 @@ published pages only.
 | `GET /published?path=/about` | none | the published document, for browser-side rendering |
 
 The engine's controllers inherit from `config.parent_controller`, so the app's
-sign-in and CSRF protection apply. A browser client must send the CSRF token
-the app's layout provides.
+sign-in and CSRF protection apply.
+
+### The npm client
+
+`createPageletClient({ baseUrl })` from `@byscott-io/pagelet` wraps every call
+above. It reads the CSRF token from the layout's `csrf_meta_tags` (pass
+`csrfToken` to override), sends the session cookie, and throws
+`PageletApiError` with `status` and `errors` on failure. `getPublished(path)`
+returns `null` for a page that is not published.
+
+`bin/e2e` in this repo runs the built client against the engine with CSRF
+protection on; CI runs it on every change.

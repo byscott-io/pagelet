@@ -22,6 +22,7 @@ yarn lint
 yarn build    # also fails if the renderer bundle imports the editor
 bundle exec rspec    # against spec/dummy, an in-memory SQLite Rails app
 bundle exec rubocop
+bin/e2e              # the built npm client against the running engine, CSRF on
 ruby bin/check-public-safe --all
 ```
 

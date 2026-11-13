@@ -85,6 +85,29 @@ import { PageletPage } from '@byscott-io/pagelet';
 it back to either component. Pages saved by an older pagelet are upgraded when
 they load.
 
+**4. With the Rails engine**, the client does the storing:
+
+```jsx
+import { createPageletClient } from '@byscott-io/pagelet';
+
+const pages = createPageletClient(); // same origin, mounted at /pagelet
+
+const { page } = await pages.getPage(id);
+<PageletEditor
+  document={page.draft_document}
+  palette={palette}
+  onChange={(document) => pages.saveDraft(id, document)}
+  onPublish={async (document) => {
+    await pages.saveDraft(id, document);
+    await pages.publish(id);
+  }}
+/>;
+```
+
+It sends the app's session cookie and the CSRF token from the page's
+`csrf-token` meta tag, and throws `PageletApiError` (with `status` and field
+`errors`) when the server refuses.
+
 ## Theme
 
 Any subset of these tokens; the rest use the defaults:

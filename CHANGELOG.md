@@ -11,6 +11,8 @@
 - Theming through CSS variables.
 - Versioned page documents (`{ pagelet: 1, data }`), upgraded when loaded.
 - `safeUrl` / `safeImageUrl`: user-entered links and images refuse unsafe schemes.
+- `createPageletClient`: the engine's API from the browser, with CSRF and
+  `PageletApiError` carrying the server's field errors.
 
 ### gem `pagelet` (Rails engine)
 - Pages scoped to an owner the app supplies; another owner's page is a 404.

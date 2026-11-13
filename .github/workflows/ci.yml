@@ -66,3 +66,19 @@ jobs:
           cd /tmp/gemcheck
           BUNDLE_GEMFILE=/tmp/gemcheck/Gemfile BUNDLE_FROZEN=false bundle install
           BUNDLE_GEMFILE=/tmp/gemcheck/Gemfile bundle exec rspec
+
+  e2e:
+    name: npm client against the Rails engine
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: bin/e2e

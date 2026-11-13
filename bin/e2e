@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# End-to-end check: the BUILT npm client against the real Rails engine, with
+# CSRF protection on. Needs Ruby (bundle) and Node (yarn) set up.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+port="${E2E_PORT:-3999}"
+mkdir -p tmp
+export RAILS_ENV=test PAGELET_E2E_DB="$PWD/tmp/e2e.sqlite3"
+rm -f "$PAGELET_E2E_DB"
+
+yarn -s build > /dev/null
+bundle exec ruby spec/e2e/setup_database.rb
+
+(cd spec/dummy && exec bundle exec puma -b "tcp://127.0.0.1:$port" -t 1:1 config.ru) > tmp/e2e-server.log 2>&1 &
+server=$!
+trap 'kill "$server" 2> /dev/null || true' EXIT
+
+for _ in $(seq 1 60); do
+  curl -sf -o /dev/null "http://127.0.0.1:$port/csrf" && break
+  kill -0 "$server" 2> /dev/null || { cat tmp/e2e-server.log; exit 1; }
+  sleep 0.5
+done
+
+E2E_URL="http://127.0.0.1:$port" node spec/e2e/client.e2e.mjs

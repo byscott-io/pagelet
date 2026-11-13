@@ -6,6 +6,7 @@ gemspec
 
 group :development, :test do
   gem "bundler-audit"
+  gem "puma"
   gem "rake"
   gem "rspec-rails", "~> 8.0"
   gem "rubocop", require: false
