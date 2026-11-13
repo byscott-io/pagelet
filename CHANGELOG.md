@@ -18,6 +18,23 @@
   color and opacity.
 - A built-in **icon set** (inline SVG): location, phone, email, video, calendar,
   clock, link, Facebook, YouTube. `<Icon name>` is exported.
+- **`<PageletMenu>` and `<PageletLayout>`:** a site's menu from its settings
+  (a brand logo, items with optional icon and highlight, left and right groups,
+  external links in a new tab, a menu button on narrow screens) and the frame
+  around a page. Pass your router's link component as `linkComponent`.
+- **Client:** `getSite`, `updateSite`, and `getPublishedPage(path)` returning
+  `{ document, pagePath, rest }`; `createPage`/`updatePage` take `matchesSubpaths`.
+
+### gem `pagelet`
+- **Site settings** per owner (`Pagelet::Site`): the theme and the menu.
+  `GET /site` is public; `PATCH /site` needs `:publish`, since changes are live
+  at once. Shapes are checked (menu style, labels, links, groups, size).
+- **Pages that answer for sub-paths:** `matches_subpaths` on a page makes
+  `/messages` serve `/messages/43`. An exact page wins, then the longest such
+  prefix. `Page.published_match(owner, path)` returns the document, the page's
+  path and the remainder; `GET /published` returns them too.
+- **New migration:** run `bin/rails pagelet:install:migrations` and migrate
+  (see docs/UPGRADING.md).
 
 ## 0.1.0 (2026-11-13)
 

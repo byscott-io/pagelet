@@ -67,4 +67,19 @@ describe('createPageletClient', () => {
   it('returns null for a 204 delete', async () => {
     expect(await createPageletClient({ fetch: fakeFetch(204) }).deletePage(1)).toBeNull();
   });
+
+  it('reads and updates site settings', async () => {
+    const fetch = fakeFetch(200, { settings: { menu: { items: [] } } });
+    const client = createPageletClient({ fetch, csrfToken: 't' });
+    expect(await client.getSite()).toEqual({ menu: { items: [] } });
+    await client.updateSite({ theme: {} });
+    expect(fetch.mock.calls[0][0]).toBe('/pagelet/site');
+    expect(fetch.mock.calls[1][1].method).toBe('PATCH');
+    expect(JSON.parse(fetch.mock.calls[1][1].body)).toEqual({ settings: { theme: {} } });
+  });
+
+  it('returns the matched page and the remainder for a sub-path', async () => {
+    const fetch = fakeFetch(200, { document: { pagelet: 1 }, page_path: '/messages', rest: '43' });
+    expect(await createPageletClient({ fetch }).getPublishedPage('/messages/43')).toEqual({ document: { pagelet: 1 }, pagePath: '/messages', rest: '43' });
+  });
 });

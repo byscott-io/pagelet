@@ -156,4 +156,53 @@ RSpec.describe "Pagelet API" do
       expect(response).to have_http_status(:not_found)
     end
   end
+
+  describe "site settings" do
+    let(:settings) do
+      { "theme" => { "colorAccent" => "#123456" },
+        "menu" => { "style" => "bar", "brand" => {}, "items" => [{ "label" => "Mission", "href" => "/mission" }] } }
+    end
+
+    it "lets anyone read the settings, since every page needs them" do
+      Pagelet::Site.create!(owner: site, settings: settings)
+      get "/pagelet/site", headers: { "X-Site-Id" => site.id.to_s }
+      expect(response).to have_http_status(:ok)
+      expect(json.dig("settings", "menu", "items", 0, "label")).to eq("Mission")
+    end
+
+    it "needs publish permission to change them, because changes are live at once" do
+      patch "/pagelet/site", params: { settings: settings }.to_json, headers: as("editor")
+      expect(response).to have_http_status(:forbidden)
+
+      patch "/pagelet/site", params: { settings: settings }.to_json, headers: as("publisher")
+      expect(response).to have_http_status(:ok)
+      expect(Pagelet::Site.settings_for(site).dig("theme", "colorAccent")).to eq("#123456")
+    end
+
+    it "keeps each owner's settings apart" do
+      patch "/pagelet/site", params: { settings: settings }.to_json, headers: as("publisher", other_site)
+      expect(Pagelet::Site.settings_for(site)).to eq(Pagelet::Site.default_settings)
+    end
+
+    it "reports a bad menu as 422 with the reason" do
+      bad = settings.deep_merge("menu" => { "items" => [{ "label" => "", "href" => "/x" }] })
+      patch "/pagelet/site", params: { settings: bad }.to_json, headers: as("publisher")
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json.dig("errors", "settings").join).to include("needs a label")
+    end
+  end
+
+  describe "pages that answer for sub-paths" do
+    it "serves /messages/43 from a /messages page that opted in, with the remainder" do
+      post "/pagelet/pages", params: { page: { path: "/messages", title: "Messages", matches_subpaths: true } }.to_json,
+                             headers: as("editor")
+      page = Pagelet::Page.find(json.dig("page", "id"))
+      expect(page.matches_subpaths).to be(true)
+      page.publish!
+
+      get "/pagelet/published", params: { path: "/messages/43" }, headers: { "X-Site-Id" => site.id.to_s }
+      expect(response).to have_http_status(:ok)
+      expect(json).to include("page_path" => "/messages", "rest" => "43")
+    end
+  end
 end

@@ -2,6 +2,7 @@
 
 Pagelet::Engine.routes.draw do
   get "published", to: "published#show"
+  resource :site, only: %i[show update]
 
   resources :pages, only: %i[index show create update destroy] do
     post :publish, on: :member

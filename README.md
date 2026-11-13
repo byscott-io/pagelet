@@ -15,6 +15,8 @@ canvas, and your site draws the saved pages with the same React components.
 - **Your own blocks**: register any React component and it appears in the
   palette beside the built-in ones.
 - **Theming** through CSS variables: colors, fonts, corner radius, page width.
+- **A site menu and layout**: logo, items with icons and highlights, left and
+  right groups, and a menu button on phones, all from site settings.
 
 pagelet is built on [Puck](https://puckeditor.com), an MIT-licensed visual
 editor for React. Your app talks only to pagelet, which keeps Puck's upgrades in
