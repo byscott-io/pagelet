@@ -89,6 +89,12 @@ module Pagelet
       end
     end
 
+    # Take the page off the site. The draft and the versions stay, so this is
+    # undone by publishing again; deleting the page is what loses history.
+    def unpublish!
+      update!(published_version: nil)
+    end
+
     # Put an earlier version's content back into the draft. Publishing it is a
     # separate step, so a rollback is reviewed like any other change and
     # history is only ever added to.
