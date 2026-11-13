@@ -108,6 +108,12 @@ module Pagelet
       published_version_id.present?
     end
 
+    # A live page whose draft has changed since it was published: visitors
+    # still see the published version until it is published again.
+    def unpublished_changes?
+      published? && draft_document != published_version.document
+    end
+
     private
 
     def normalize_path

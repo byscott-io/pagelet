@@ -76,3 +76,23 @@ describe('PageletEditor with older DropZone data', () => {
     expect(saved.data.zones['tz:left'][0].props.text).toBe('Heading from a zone');
   });
 });
+
+describe('PageletEditor readOnly', () => {
+  it('shows the page but offers no Publish and reports no changes', async () => {
+    // Control: the same editor, not read-only, does show Publish.
+    let editable;
+    await act(async () => { editable = render(<PageletEditor document={createDocument()} palette={createPalette()} onPublish={() => {}} />); });
+    expect([...editable.container.querySelectorAll('[class*="_Button_"]')].some((el) => el.textContent.trim() === 'Publish')).toBe(true);
+    cleanup();
+
+    const onPublish = vi.fn();
+    const onChange = vi.fn();
+    let view;
+    await act(async () => {
+      view = render(<PageletEditor document={createDocument()} palette={createPalette()} onPublish={onPublish} onChange={onChange} readOnly />);
+    });
+    const publish = [...view.container.querySelectorAll('[class*="_Button_"], button')].filter((el) => el.textContent.trim() === 'Publish');
+    expect(publish).toHaveLength(0);
+    expect(onChange).not.toHaveBeenCalled();
+  });
+});

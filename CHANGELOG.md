@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased (0.3.1)
+
+- **Unpublished changes.** Page summaries (the page list, the AI tools) include
+  `unpublished_changes`: true when a live page's draft differs from what is
+  published, so an admin can see that an edit is not live yet.
+- **One version's content:** `GET /pages/:id/versions/:number` and
+  `client.getVersion(id, number)`, for previewing an older version.
+- **`<PageletEditor readOnly>`** shows a page without letting it change (Puck's
+  permissions all off, no Publish, no onChange). For older versions: only the
+  draft is edited, and an old version comes back by restoring it into the draft.
+
 ## 0.3.0 (2026-11-13)
 
 - **AI tools** (`docs/AI_TOOLS.md`): ten plain-Ruby tools that let an AI

@@ -5,7 +5,11 @@ import { createDocument, needsPuckMigration, upgradeDocument } from './document.
 // stylesheet from "@byscott-io/pagelet/editor.css") in admin screens only.
 //
 // onPublish and onChange receive a pagelet document, ready to store as-is.
-export function PageletEditor({ document, palette, theme, onPublish, onChange, headerTitle, ...rest }) {
+//
+// readOnly shows the page without letting it change: nothing can be added,
+// moved, edited or deleted, and onChange and onPublish are never called. For
+// looking at an older published version; only the draft is edited.
+export function PageletEditor({ document, palette, theme, onPublish, onChange, headerTitle, readOnly = false, ...rest }) {
   if (!palette) throw new Error('pagelet: <PageletEditor> needs a palette (see createPalette)');
   const data = editorData(document, palette);
   return (
@@ -15,11 +19,15 @@ export function PageletEditor({ document, palette, theme, onPublish, onChange, h
       data={data}
       metadata={{ pageletTheme: theme }}
       headerTitle={headerTitle}
-      onPublish={onPublish ? (next) => onPublish(createDocument(next)) : undefined}
-      onChange={onChange ? (next) => onChange(createDocument(next)) : undefined}
+      permissions={readOnly ? READ_ONLY : rest.permissions}
+      overrides={readOnly ? { ...rest.overrides, headerActions: () => null } : rest.overrides}
+      onPublish={onPublish && !readOnly ? (next) => onPublish(createDocument(next)) : undefined}
+      onChange={onChange && !readOnly ? (next) => onChange(createDocument(next)) : undefined}
     />
   );
 }
+
+const READ_ONLY = { drag: false, duplicate: false, delete: false, edit: false, insert: false };
 
 // Older Puck data (DropZone zones) is converted to slots here, in the editor,
 // where Puck is loaded anyway; the public renderer never imports Puck.

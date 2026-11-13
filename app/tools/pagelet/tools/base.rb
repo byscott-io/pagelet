@@ -46,6 +46,7 @@ module Pagelet
 
       def summary(page)
         { "id" => page.id, "path" => page.path, "title" => page.title, "published" => page.published?,
+          "unpublished_changes" => page.unpublished_changes?,
           "published_version" => page.published_version&.number, "answers_subpaths" => page.matches_subpaths,
           "preview_url" => context.preview_url.call(page) }.compact
       end

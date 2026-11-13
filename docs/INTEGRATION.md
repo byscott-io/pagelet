@@ -101,6 +101,7 @@ published pages only.
 | `POST /pages/:id/publish` | `:publish` | publish the draft as the next numbered version |
 | `POST /pages/:id/unpublish` | `:publish` | take the page off the site, keeping its draft and versions |
 | `GET /pages/:id/versions` | `:edit` | published history, marking the live version |
+| `GET /pages/:id/versions/:number` | `:edit` | one version with its document, to preview it |
 | `POST /pages/:id/versions/:number/restore` | `:edit` | copy an old version into the draft (publish it to go live) |
 | `GET /published?path=/about` | none | the published document (with `page_path` and `rest`), for browser-side rendering |
 | `GET /site` | none | the site's theme and menu |
