@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased (0.2.0)
+## 0.2.0 (2026-11-13)
 
 ### npm `@byscott-io/pagelet`
 - **Page settings** (the page's own fields): a browser title, and a background
@@ -22,6 +22,8 @@
   (a brand logo, items with optional icon and highlight, left and right groups,
   external links in a new tab, a menu button on narrow screens) and the frame
   around a page. Pass your router's link component as `linkComponent`.
+- The menu's brand link is a plain anchor for `tel:`/`mailto:` (like menu
+  items), never passed to the app's router.
 - **Client:** `getSite`, `updateSite`, and `getPublishedPage(path)` returning
   `{ document, pagePath, rest }`; `createPage`/`updatePage` take `matchesSubpaths`.
 

@@ -49,6 +49,12 @@ describe('PageletMenu', () => {
     expect(render({ currentPath: '/mission' })).toContain('pagelet-menu__link--current');
   });
 
+  it('makes a tel: or mailto: brand link a plain anchor, not a router link', () => {
+    const html = renderToString(<PageletMenu menu={{ brand: { label: 'Call us', href: 'tel:+15555550100' } }} linkComponent={Link} />);
+    expect(html).toContain('href="tel:+15555550100"');
+    expect(html).not.toContain('data-router-link');
+  });
+
   it('renders with no settings at all', () => {
     expect(renderToString(<PageletMenu />)).toContain('pagelet-menu');
   });

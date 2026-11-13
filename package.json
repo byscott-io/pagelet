@@ -1,6 +1,6 @@
 {
   "name": "@byscott-io/pagelet",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Page builder for React: a visual editor and a renderer that draw saved pages with your own components (built on Puck)",
   "license": "MIT",
   "type": "module",

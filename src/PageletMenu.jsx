@@ -38,6 +38,11 @@ function isExternal(href) {
   return /^https?:\/\//i.test(href);
 }
 
+// Links the app's router cannot handle: other sites, phone numbers, email.
+function needsPlainAnchor(href, LinkComponent) {
+  return !LinkComponent || isExternal(href) || /^(mailto|tel):/i.test(href);
+}
+
 function MenuLink({ item, linkComponent: LinkComponent, currentPath, onNavigate }) {
   const href = safeUrl(item.href);
   if (!href) return null;
@@ -51,7 +56,7 @@ function MenuLink({ item, linkComponent: LinkComponent, currentPath, onNavigate 
     </>
   );
 
-  if (isExternal(href) || /^(mailto|tel):/i.test(href) || !LinkComponent) {
+  if (needsPlainAnchor(href, LinkComponent)) {
     const external = isExternal(href) ? { target: '_blank', rel: 'noopener noreferrer' } : {};
     return <a className={className} style={style} href={href} {...external}>{body}</a>;
   }
@@ -71,7 +76,7 @@ export function PageletMenu({ menu = {}, linkComponent, currentPath }) {
   const close = () => setOpen(false);
   const group = (name) => items.filter((item) => (item.group ?? 'left') === name);
   const linkProps = { linkComponent, currentPath, onNavigate: close };
-  const BrandLink = linkComponent && !isExternal(brandHref) ? linkComponent : 'a';
+  const BrandLink = needsPlainAnchor(brandHref, linkComponent) ? 'a' : linkComponent;
   const brandTarget = BrandLink === 'a' ? { href: brandHref } : { to: brandHref, onClick: close };
 
   return (
