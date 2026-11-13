@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.2 (2026-11-13)
 
 - **Theme `fontSize`**: the page's base text size (default `1rem`), as
   `--pagelet-font-size`. It applies to the page, not the menu, so a site can

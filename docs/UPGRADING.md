@@ -3,6 +3,14 @@
 Run from the consuming app. Always bump the gem and the npm package together;
 they share one version.
 
+## 0.2.1 to 0.2.2
+
+No migration and no code change.
+
+1. `bundle update pagelet` and `yarn upgrade @byscott-io/pagelet@^0.2.2`.
+2. Optional: set `fontSize` in the site theme (for example `'1.25rem'`) for
+   larger page text. The menu keeps its size. Pages without it are unchanged.
+
 ## 0.2.0 to 0.2.1
 
 No migration and no code change for a typical app.
