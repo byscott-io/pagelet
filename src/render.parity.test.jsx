@@ -39,3 +39,44 @@ describe("pagelet's renderer", () => {
     expect(ours).toContain('mine editing=false'); // a custom block, with the puck prop it expects
   });
 });
+
+describe("pagelet's renderer with older DropZone data", () => {
+  // A block from before slots: it draws its children with puck.renderDropZone,
+  // and they live in data.zones under "<block id>:<zone>".
+  const TwoZones = {
+    render: ({ puck }) => (
+      <div className="two">
+        <aside>{puck.renderDropZone({ zone: 'left' })}</aside>
+        <main>{puck.renderDropZone({ zone: 'right' })}</main>
+      </div>
+    ),
+  };
+  const zonePalette = createPalette({ blocks: { TwoZones } });
+  const zoneData = {
+    root: { props: {} },
+    content: [{ type: 'TwoZones', props: { id: 'tz' } }],
+    zones: {
+      'tz:left': [{ type: 'Heading', props: { id: 'zh', text: 'Left zone heading', level: 'h2', align: 'left' } }],
+      'tz:right': [
+        { type: 'Text', props: { id: 'zt', text: 'Right zone text', align: 'left' } },
+        { type: 'TwoZones', props: { id: 'nested' } },
+      ],
+      'nested:left': [{ type: 'Text', props: { id: 'nt', text: 'Nested zone text', align: 'left' } }],
+    },
+  };
+
+  it("draws a page's zones, byte for byte as Puck does", () => {
+    const ours = renderToString(renderPage({ config: zonePalette.config, data: zoneData }));
+    const puck = renderToString(<Render config={zonePalette.config} data={zoneData} />);
+    expect(ours).toBe(puck);
+    for (const text of ['Left zone heading', 'Right zone text', 'Nested zone text']) expect(ours).toContain(text);
+  });
+
+  it('draws the zones through PageletPage too, so such a page never renders blank', async () => {
+    const { PageletPage } = await import('./PageletPage.jsx');
+    const { createDocument } = await import('./document.js');
+    const html = renderToString(<PageletPage document={createDocument(zoneData)} palette={zonePalette} />);
+    expect(html).toContain('Left zone heading');
+    expect(html).toContain('Nested zone text');
+  });
+});
