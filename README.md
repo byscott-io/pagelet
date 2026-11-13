@@ -8,8 +8,10 @@ canvas, and your site draws the saved pages with the same React components.
 - **A small renderer** for public pages. It has no editor code in it, and it
   works in server-side rendering, so search engines see real HTML.
 - **A standard set of blocks**: sections, columns, hero, headings, text,
-  buttons, calls to action, cards, FAQ, images, image with text, and
-  YouTube/Vimeo video.
+  quotes, icon lists, schedules, buttons, calls to action, cards, FAQ, images,
+  image with text, YouTube/Vimeo video, and (for hosts you allow) embedded pages.
+- **Page backgrounds**: a site-wide photo under a panel of any color and
+  opacity, which each page can follow, replace or turn off.
 - **Your own blocks**: register any React component and it appears in the
   palette beside the built-in ones.
 - **Theming** through CSS variables: colors, fonts, corner radius, page width.
@@ -123,6 +125,20 @@ Any subset of these tokens; the rest use the defaults:
 
 They become CSS variables (`--pagelet-color-accent`, …) on the page wrapper, so
 your own blocks can use them too: `color: var(--pagelet-color-accent)`.
+
+A site background goes in the theme too, and each page can follow it, use its
+own, or have none (the page's Background setting):
+
+```js
+background: {
+  image: '/images/building.jpg',
+  overlayColor: '#ffffff',
+  overlayOpacity: 85,   // percent
+  fit: 'photo',         // or 'cover'
+  frame: 'card',        // or 'none'
+  rounded: true,
+}
+```
 
 ## Writing your own blocks
 

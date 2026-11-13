@@ -1,4 +1,4 @@
-import { CallToAction, Button, Cards, Faq, Heading, Hero, Text } from './content.jsx';
+import { CallToAction, Button, Cards, Faq, Heading, Hero, IconList, Quote, Schedule, Text } from './content.jsx';
 import { Columns, Divider, Section, Spacer } from './layout.jsx';
 import { Image, ImageText, VideoEmbed } from './media.jsx';
 
@@ -12,6 +12,9 @@ export const builtInBlocks = {
   Hero,
   Heading,
   Text,
+  Quote,
+  IconList,
+  Schedule,
   Button,
   CallToAction,
   Cards,

@@ -1,3 +1,4 @@
+import { cssImage, overlayColor, percentField } from '../style.js';
 import { tokenVar } from '../theme.js';
 
 const SPACING = { none: '0', small: '16px', medium: '40px', large: '80px' };
@@ -21,23 +22,35 @@ export const Section = {
         { label: 'Accent', value: 'accent' },
       ],
     },
+    backgroundImage: { type: 'text', label: 'Background image URL (optional)' },
+    overlayColor: { type: 'text', label: 'Overlay color over the image (hex, e.g. #ffffff)' },
+    overlayOpacity: percentField('Overlay opacity %'),
     padding: { type: 'select', options: spacingOptions },
     content: { type: 'slot' },
   },
-  defaultProps: { background: 'none', padding: 'medium' },
-  render: ({ background, padding, content: Content }) => (
-    <section
-      style={{
-        background: BACKGROUNDS[background] ?? BACKGROUNDS.none,
-        color: background === 'accent' ? tokenVar('colorAccentText') : undefined,
-        paddingBlock: SPACING[padding] ?? SPACING.medium,
-      }}
-    >
+  defaultProps: { background: 'none', backgroundImage: '', overlayColor: '#ffffff', overlayOpacity: 85, padding: 'medium' },
+  render: ({ background, backgroundImage, overlayColor: color, overlayOpacity, padding, content: Content }) => {
+    const image = cssImage(backgroundImage);
+    const inner = (
       <div style={{ maxWidth: tokenVar('maxWidth'), margin: '0 auto', paddingInline: '16px' }}>
         <Content />
       </div>
-    </section>
-  ),
+    );
+    return (
+      <section
+        style={{
+          background: image ? `${image} center / cover` : BACKGROUNDS[background] ?? BACKGROUNDS.none,
+          color: !image && background === 'accent' ? tokenVar('colorAccentText') : undefined,
+        }}
+      >
+        {/* Over an image, the content sits on a panel of the chosen color and
+            opacity, so text stays readable whatever the photo. */}
+        <div style={{ paddingBlock: SPACING[padding] ?? SPACING.medium, background: image ? overlayColor(color, overlayOpacity ?? 85) : undefined }}>
+          {inner}
+        </div>
+      </section>
+    );
+  },
 };
 
 export const Columns = {

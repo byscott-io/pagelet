@@ -57,3 +57,10 @@ export function needsPuckMigration(data) {
   const root = data.root ?? {};
   return Object.keys(root).some((key) => key !== 'props' && key !== 'readOnly');
 }
+
+// A page's own settings (title, background), for the app to use outside the
+// page body, e.g. the browser title.
+export function pageSettings(document) {
+  const props = upgradeDocument(document)?.data?.root?.props ?? {};
+  return { title: props.title || '', background: props.background ?? 'site' };
+}
