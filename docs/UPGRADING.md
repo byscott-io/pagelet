@@ -3,6 +3,17 @@
 Run from the consuming app. Always bump the gem and the npm package together;
 they share one version.
 
+## 0.3.0 to 0.3.1
+
+No migration and no code change.
+
+1. `bundle update pagelet` and `yarn upgrade @byscott-io/pagelet@^0.3.1`.
+2. Optional:
+   - show `unpublished_changes` from the page list, so admins can see an edit
+     that is not live yet
+   - preview older versions with `client.getVersion(id, number)`
+   - show them in `<PageletEditor readOnly>`
+
 ## 0.2.x to 0.3.0
 
 No migration, and nothing changes for an app that does not use the AI tools.

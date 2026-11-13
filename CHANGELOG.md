@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased (0.3.1)
+## 0.3.1 (2026-11-13)
 
 - **Unpublished changes.** Page summaries (the page list, the AI tools) include
   `unpublished_changes`: true when a live page's draft differs from what is
