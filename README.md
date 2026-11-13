@@ -20,7 +20,7 @@ one place.
 
 > Not related to the older `pagelet` package on npm from the BigPipe project.
 
-**Status:** under active development, not yet released. Two packages:
+**Status:** early (0.1.x); the API may still change. Two packages:
 
 - `@byscott-io/pagelet` (npm): the editor, renderer and blocks.
 - `pagelet` (gem): a Rails engine that stores pages, keeps every published

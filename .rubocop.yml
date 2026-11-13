@@ -54,3 +54,8 @@ Rails/StrongParametersExpect:
 # A library's validation messages are plain English until it ships locale files.
 Rails/I18nLocaleTexts:
   Enabled: false
+
+# The gem's own Rakefile builds and versions the gem; there is no Rails app to load.
+Rails/RakeEnvironment:
+  Exclude:
+    - "Rakefile"

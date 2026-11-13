@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased (0.1.0)
+## 0.1.0 (2026-11-13)
+
+First release.
 
 ### npm `@byscott-io/pagelet`
 - `createPalette`: the built-in blocks plus an app's own, with hiding and grouping.

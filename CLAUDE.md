@@ -32,5 +32,6 @@ ruby bin/check-public-safe --all
 |------|------|
 | Wiring it into an app | [docs/INTEGRATION.md](docs/INTEGRATION.md) |
 | Upgrading an app | [docs/UPGRADING.md](docs/UPGRADING.md) |
+| Cutting a release | [docs/RELEASING.md](docs/RELEASING.md) |
 
 Behaviour rules are in `.claude/rules/`, not restated here.
