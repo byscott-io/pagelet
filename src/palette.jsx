@@ -7,6 +7,9 @@ import { ThemeRoot } from './ThemeRoot.jsx';
 // add fields freely, never rename one.
 export const pageFields = {
   title: { type: 'text', label: 'Page title (browser tab)' },
+  // The line under the title in search results. Blank uses the start of the
+  // page's first text (Pagelet::PageSeo on the server).
+  description: { type: 'textarea', label: 'Description (search results)' },
   background: {
     type: 'radio',
     label: 'Background',
@@ -74,7 +77,7 @@ export function createPalette({ blocks = {}, hide = [], categories = {}, root = 
       components,
       categories: puckCategories,
       root: {
-        defaultProps: { title: '', background: 'site', backgroundImage: '', overlayColor: '#ffffff' },
+        defaultProps: { title: '', description: '', background: 'site', backgroundImage: '', overlayColor: '#ffffff' },
         ...root,
         fields: { ...pageFields, ...(root.fields ?? {}) },
         // The page's root render applies the theme and the background. It is

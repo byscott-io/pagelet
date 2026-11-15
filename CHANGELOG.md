@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.2 (2026-11-15)
+
+- **Page description.** A "Description (search results)" setting on every
+  page, beside "Page title (browser tab)".
+- **`Pagelet::PageSeo.for(owner, path)`** returns a published page's
+  `{ "title", "description" }` for search results and the browser tab. A
+  blank description falls back to the start of the page's first text
+  (headings skipped), trimmed to about 160 characters. nil for a sub-path a
+  page answers for, which is a different page to a search engine.
+
 ## 0.3.1 (2026-11-13)
 
 - **Unpublished changes.** Page summaries (the page list, the AI tools) include

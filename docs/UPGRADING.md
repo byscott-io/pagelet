@@ -3,6 +3,16 @@
 Run from the consuming app. Always bump the gem and the npm package together;
 they share one version.
 
+## 0.3.1 to 0.3.2
+
+No migration and no code change.
+
+1. `bundle update pagelet` and `yarn upgrade @byscott-io/pagelet@^0.3.2`.
+2. Rebuild the block catalog if you write one (the page settings gained
+   `description`), so AI tools can set it.
+3. Optional: feed `Pagelet::PageSeo.for(owner, path)` into your page titles
+   and meta descriptions (see INTEGRATION.md, "Titles and descriptions").
+
 ## 0.3.0 to 0.3.1
 
 No migration and no code change.

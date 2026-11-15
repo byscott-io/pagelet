@@ -89,6 +89,15 @@ to decide what to show.
 `Pagelet::Page.sitemap_entries(owner)` returns `[{ path:, updated_at: }]` for
 published pages only.
 
+### Titles and descriptions
+
+`Pagelet::PageSeo.for(owner, path)` returns `{ "title" =>, "description" => }`
+for the page published at exactly that path, or nil. The title is the page's
+"Page title (browser tab)" setting; the description is its "Description
+(search results)" setting, else the start of its first text. Use it to feed
+your app's `<title>` and meta description (corebyscott apps:
+`config.seo_resolver`), so a page an admin adds needs no hand-kept list.
+
 ### The API (mounted at /pagelet)
 
 | Request | Needs | Does |
