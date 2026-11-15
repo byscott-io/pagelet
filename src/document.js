@@ -64,9 +64,11 @@ export function needsPuckMigration(data) {
   return Object.keys(root).some((key) => key !== 'props' && key !== 'readOnly');
 }
 
-// A page's own settings (title, background), for the app to use outside the
-// page body, e.g. the browser title.
+// A page's own settings (title, description, background), for the app to use
+// outside the page body, e.g. the browser title and the meta description. The
+// server-side equivalent, with the description's fallback to the page's first
+// text, is Pagelet::PageSeo.
 export function pageSettings(document) {
   const props = upgradeDocument(document)?.data?.root?.props ?? {};
-  return { title: props.title || '', background: props.background ?? 'site' };
+  return { title: props.title || '', description: props.description || '', background: props.background ?? 'site' };
 }

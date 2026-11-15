@@ -133,6 +133,8 @@ describe('page settings', () => {
   it("exposes the page's title for the browser tab", () => {
     expect(pageSettings(page([], { title: 'Mission' })).title).toBe('Mission');
     expect(pageSettings(null).title).toBe('');
+    expect(pageSettings(page([], { description: 'Why we are here.' })).description).toBe('Why we are here.');
+    expect(pageSettings(null).description).toBe('');
   });
 });
 

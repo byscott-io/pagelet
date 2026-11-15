@@ -12,6 +12,10 @@
         "type": "text",
         "label": "Page title (browser tab)"
       },
+      "description": {
+        "type": "textarea",
+        "label": "Description (search results)"
+      },
       "background": {
         "type": "radio",
         "label": "Background",
@@ -47,6 +51,7 @@
     },
     "defaultProps": {
       "title": "",
+      "description": "",
       "background": "site",
       "backgroundImage": "",
       "overlayColor": "#ffffff"
